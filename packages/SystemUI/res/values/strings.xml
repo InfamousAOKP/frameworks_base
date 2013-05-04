@@ -554,6 +554,11 @@
     <string name="action_notifications">Notifications</string>
     <string name="action_lastapp">Last App</string>
     <string name="action_none">Empty</string>
+    <!-- djmatt604/Team Infamous - Add PIE strings from PA -->
+    <string name="pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pie_hour_format_12">hh:mm</string>
+    <string name="pie_hour_format_24">HH:mm</string>
+    <string name="pie_am_pm">a</string> 
 
     <string name="widgets">Widgets</string>
     <string name="toggle_navbar">NavBar - Toggle</string>

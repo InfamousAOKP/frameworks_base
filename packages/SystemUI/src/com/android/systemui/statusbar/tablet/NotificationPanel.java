@@ -99,6 +99,24 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
     Choreographer mChoreo = new Choreographer();
 
+    QuickSettingsContainerView mSettingsContainer;
+    QuickSettings mQS;
+
+    public QuickSettingsCallback mCallback;
+
+    // Simple callback used to provide a bar to QuickSettings
+    class QuickSettingsCallback extends PanelBar {
+        public QuickSettingsCallback(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+       @Override
+        public void collapseAllPanels(boolean animate) {
+            super.collapseAllPanels(animate);
+            show(false, animate);
+        }
+    }
+
     final int FLIP_DURATION_OUT = 125;
     final int FLIP_DURATION_IN = 225;
     final int FLIP_DURATION = (FLIP_DURATION_IN + FLIP_DURATION_OUT);
@@ -293,11 +311,14 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
             mShowing = show;
             setVisibility(show ? View.VISIBLE : View.GONE);
         }
+	
         if (show && !mHasClearableNotifications) { // go to settings panel is no notifications
             flipToSettings();
         } else if(show) {
             flipToNotifications();
         }
+	mBar.showClock(Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_SHOW_CLOCK, 1) == 1 && !show); 
     }
 
     /**

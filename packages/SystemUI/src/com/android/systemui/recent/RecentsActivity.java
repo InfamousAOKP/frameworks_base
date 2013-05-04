@@ -32,6 +32,8 @@ import android.view.WindowManager;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
 
+/* Begin modification for PIE merge from PA - djmatt604/Team Infamous */
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecentsActivity extends Activity {
@@ -43,6 +45,8 @@ public class RecentsActivity extends Activity {
     public static final String PRELOAD_PERMISSION = "com.android.systemui.recent.permission.PRELOAD";
     public static final String WAITING_FOR_WINDOW_ANIMATION_PARAM = "com.android.systemui.recent.WAITING_FOR_WINDOW_ANIMATION";
     private static final String WAS_SHOWING = "was_showing";
+
+    private static ArrayList<NavigationCallback>sNavigationCallbacks = new ArrayList<NavigationCallback>(); 
 
     private RecentsPanelView mRecentsPanel;
     private IntentFilter mIntentFilter;
@@ -117,6 +121,19 @@ public class RecentsActivity extends Activity {
         return WallpaperManager.getInstance(context).getWallpaperInfo() != null;
     }
 
+    public void setRecentHints(boolean show) { 
+        // Check if we need to enable alternate drawable for recent apps key
+        // on all the stored navigation callbacks
+        for(NavigationCallback callback : sNavigationCallbacks) {
+            if(callback == null) break; // FIXME: Add multiuser support
+            int navigationHints = callback.getNavigationIconHints();
+            callback.setNavigationIconHints(NavigationBarView.NAVBAR_RECENTS_HINT,
+                    show ? (navigationHints | StatusBarManager.NAVIGATION_HINT_RECENT_ALT)
+                    : (navigationHints & ~StatusBarManager.NAVIGATION_HINT_RECENT_ALT), true);
+        }
+     } 
+
+
     @Override
     public void onStart() {
         // Hide wallpaper if it's not a static image
@@ -137,6 +154,8 @@ public class RecentsActivity extends Activity {
         mForeground = true;
         super.onResume();
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -232,6 +251,10 @@ public class RecentsActivity extends Activity {
     boolean isForeground() {
         return mForeground;
     }
+
+    public static void addNavigationCallback(NavigationCallback callback) {
+        sNavigationCallbacks.add(callback);
+    } 
 
     boolean isActivityShowing() {
          return mShowing;

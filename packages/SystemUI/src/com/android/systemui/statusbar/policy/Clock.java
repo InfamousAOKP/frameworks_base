@@ -53,6 +53,7 @@ import com.android.internal.R;
  * Digital clock for the status bar.
  */
 public class Clock extends TextView {
+
     private boolean mAttached;
     private Calendar mCalendar;
     private String mClockFormatString;
@@ -91,9 +92,7 @@ public class Clock extends TextView {
         super(context, attrs, defStyle);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    public void startBroadcastReceiver() { 
 
         if (!mAttached) {
             mAttached = true;
@@ -115,12 +114,20 @@ public class Clock extends TextView {
         // The time zone may have changed while the receiver wasn't registered, so update the Time
         mCalendar = Calendar.getInstance(TimeZone.getDefault());
 
+	updateParameters();
+
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
         updateSettings();
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startBroadcastReceiver();
+    }
+
+    @Override 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (mAttached) {
@@ -150,12 +157,21 @@ public class Clock extends TextView {
         }
     };
 
+    private void updateParameters() {
+        setVisibility((Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_SHOW_CLOCK, 1) == 1) ? View.VISIBLE : View.GONE);
+        AM_PM_STYLE = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_AM_PM_STYLE, 2);
+        mClockFormatString = null;
+    }
+ 
     final void updateClock() {
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        setText(getSmallTime());
+        CharSequence seq = getSmallTime();
+        setText(seq); 
     }
 
-    private final CharSequence getSmallTime() {
+    public final CharSequence getSmallTime() {
         Context context = getContext();
         boolean b24 = DateFormat.is24HourFormat(context);
         int res;
@@ -250,6 +266,7 @@ public class Clock extends TextView {
 
         @Override
         public void onChange(boolean selfChange) {
+	    if(!mShowAlways) updateParameters(); 
             updateSettings();
         }
     }

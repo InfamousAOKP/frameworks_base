@@ -2531,6 +2531,40 @@ public final class Settings {
          * Whether the volume keys wake the screen.
          * @hide
          */
+        public static final String PIE_CONTROLS = "pie_controls";
+
+        /**
+	* Location of the pie in the screen
+	* 0 = Gravity.TOP
+	* 1 = Gravity.BOTTOM
+	* 2 = Gravity.RIGHT
+	* 3 = Gravity.LEFT
+	* @hide
+	*/
+        public static final String PIE_GRAVITY = "pie_gravity";
+
+        /**
+	* Pie status report
+	* 0 = Bare
+	* 1 = Quick
+	* 2 = Default
+	* 3 = Slow
+	* @hide
+	*/
+        public static final String PIE_MODE = "pie_mode";
+
+        /**
+	* Pie size fraction
+	* @hide
+	*/
+        public static final String PIE_SIZE = "pie_size";
+
+        /**
+	* User Interface State
+	* 1 = Rebuild UI, resets to 0 automatically
+	* @hide
+	*/
+
         public static final String VOLUME_WAKE_SCREEN = "volume_wake_screen";
 
         /**
